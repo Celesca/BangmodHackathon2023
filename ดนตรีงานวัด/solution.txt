@@ -1,0 +1,131 @@
+#include <stdio.h>
+#include <string.h>
+int
+main ()
+{
+  int up, down, blank = 0, i, copyb, index, check = 1, k;
+  char note[8], copyn[8], checkcopy[10][8], *c, elsefor = '0';
+  float all, copya, j;
+  scanf ("%d %d", &up, &down);
+  scanf ("%d", &blank);
+  scanf ("%[^\n]s", note);
+  all = up * (4.0 / down);
+  for (i = 0; i < strlen (note); i++)
+    {
+      switch (note[i])
+	{
+	case 'W':
+	  all -= 4;
+	  break;
+	case 'H':
+	  all -= 2;
+	  break;
+	case 'Q':
+	  all -= 1;
+	  break;
+	case 'E':
+	  all -= 0.5;
+	  break;
+	case 'X':
+	  blank += 1;
+	  break;
+	}
+    }
+  copyb = blank;
+  strcpy (copyn, note);
+  strcpy (checkcopy[0], note);
+  copya = all;
+  for (i = 0; i < blank * (blank - 1) + 1; i++)
+    {
+      for (j = 4; j >= 0.1; j /= 2)
+	{
+	  //printf ("%.2f  %.2f  %d\n(%s)\n", j, copya, copyb, copyn);
+	  if (copyb == 1)
+	    {
+	      c = strchr (copyn, 'X');
+	      index = (int) (c - copyn);
+	      if (copya == 4)
+		{
+		  copyn[index] = 'W';
+		}
+	      else if (copya == 2)
+		{
+		  copyn[index] = 'H';
+		}
+	      else if (copya == 1)
+		{
+		  copyn[index] = 'Q';
+		}
+	      else if (copya == 0.5)
+		{
+		  copyn[index] = 'E';
+		}
+	      else if (copya == 0)
+		{
+		  copyn[index] = '-';
+		  //printf("*%s*\n",copyn);
+		}
+	      for (k = 0; k <= check; k++)
+		if (strcmp (checkcopy[k], copyn) == 0)
+		  {
+		    //printf("(%s==%s)\n",checkcopy[k],copyn);
+		    elsefor = '1';
+		    break;
+		  }
+	      if (elsefor == '1')
+		elsefor = '0';
+	      else if (copyn[index] != 'X')
+		{
+		  printf ("%s\n", copyn);
+		  strcpy (checkcopy[check], copyn);
+		  check += 1;
+		}
+	      copyb = blank;
+	      copya = all;
+	      strcpy (copyn, note);
+	    }
+	  else
+	    {
+	      c = strchr (copyn, 'X');
+	      index = (int) (c - copyn);
+	      if (j >= 4 && copya >= 4)
+		{
+		  copyn[index] = 'W';
+		  copya -= 4;
+		  copyb -= 1;
+		  j *= 2;
+		}
+	      else if (j >= 2 && copya >= 2)
+		{
+		  copyn[index] = 'H';
+		  copya -= 2;
+		  copyb -= 1;
+		  j *= 2;
+		}
+	      else if (j >= 1 && copya >= 1)
+		{
+		  copyn[index] = 'Q';
+		  copya -= 1;
+		  copyb -= 1;
+		  j *= 2;
+		}
+	      else if (j >= 0.5 && copya >= 0.5)
+		{
+		  copyn[index] = 'E';
+		  copya -= 0.5;
+		  copyb -= 1;
+		  j *= 2;
+		}
+	      else if (j >= 0 && copya >= 0)
+		{
+		  copyn[index] = '-';
+		  copyb -= 1;
+		  j *= 2;
+		}
+	    }
+	}
+    }
+  if (check == 1)
+    printf ("impossible");
+  return 0;
+}
